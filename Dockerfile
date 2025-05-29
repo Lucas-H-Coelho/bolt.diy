@@ -15,6 +15,7 @@ RUN npm install -g pnpm && pnpm install
 
 # Copy the rest of your app's source code
 COPY . .
+RUN if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
 
 # Expose the port the app runs on
 EXPOSE 5173

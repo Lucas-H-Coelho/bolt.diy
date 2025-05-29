@@ -84,11 +84,11 @@ project, please check the [project management guide](./PROJECT.md) to get starte
 - ⬜ **HIGH PRIORITY** - Better prompting for smaller LLMs (code window sometimes doesn't start)
 - ⬜ **HIGH PRIORITY** - Run agents in the backend as opposed to a single model call
 - ✅ Deploy directly to Netlify (@xKevIsDev)
-- ✅ Supabase Integration (@xKevIsDev)
+- ⬜ Supabase Integration
 - ⬜ Have LLM plan the project in a MD file for better results/transparency
 - ⬜ VSCode Integration with git-like confirmations
 - ⬜ Upload documents for knowledge - UI design templates, a code base to reference coding style, etc.
-- ✅ Voice prompting
+- ⬜ Voice prompting
 - ⬜ Azure Open AI API Integration
 - ⬜ Vertex AI Integration
 - ⬜ Granite Integration
@@ -110,9 +110,11 @@ project, please check the [project management guide](./PROJECT.md) to get starte
 
 The web container now includes Python, Flask, and Streamlit, allowing you to develop and run Python-based applications.
 
-### Flask
+### Quick Start
 
-To run a Flask application, use the following command in the terminal:
+For a quick start, you can run your Python applications directly from the terminal:
+
+**Flask:**
 
 ```bash
 python3 -m flask run --host=0.0.0.0 --port=5000
@@ -120,15 +122,120 @@ python3 -m flask run --host=0.0.0.0 --port=5000
 
 Make sure your Flask application file (e.g., `app.py`) is in the root directory of your project.
 
-### Streamlit
-
-To run a Streamlit application, use the following command in the terminal:
+**Streamlit:**
 
 ```bash
 streamlit run your_app.py --server.port 8501 --server.address 0.0.0.0
 ```
 
 Replace `your_app.py` with the name of your Streamlit application file.
+
+### Advanced Python Usage
+
+This section provides more detailed guidance on running and deploying Python applications within the bolt.diy environment.
+
+#### Using Startup Scripts
+
+We provide example startup scripts in the `examples/python/` directory:
+- `examples/python/start-flask.sh`
+- `examples/python/start-streamlit.sh`
+
+These scripts offer a convenient way to start your applications with common configurations. You can run them directly from the terminal:
+
+```bash
+bash examples/python/start-flask.sh
+# OR
+bash examples/python/start-streamlit.sh
+```
+
+Feel free to customize these scripts to suit your specific needs, such as changing default ports or application filenames.
+
+#### Dependency Management
+
+Manage your Python project dependencies using a `requirements.txt` file. Place this file in the root directory of your project. The Docker image is configured to automatically detect and install packages listed in `requirements.txt` during the build process.
+
+Example `requirements.txt`:
+```
+flask==2.3.0
+streamlit==1.28.0
+pandas
+# Add other necessary packages
+```
+
+#### Project Structure
+
+A typical project structure would look like this:
+
+```
+/
+|-- app.py             # Your main Flask or Streamlit application file
+|-- requirements.txt   # Python dependencies
+|-- ...                # Other project files and folders
+```
+
+For Flask, ensure your main application instance is correctly defined in `app.py` (or your chosen main file). For Streamlit, `app.py` (or your chosen file) should contain your Streamlit UI code.
+
+#### Execution Context and Docker
+
+The default `CMD` in the `Dockerfile` is set up to run the primary Node.js application (bolt.diy itself). To run your Python application, you have a couple of options:
+
+1.  **Override Docker CMD:** When running the Docker container, you can override the default command.
+    *   For `docker run`:
+        ```bash
+        docker run -p 5000:5000 -p 8501:8501 <your_image_name> bash examples/python/start-flask.sh
+        # or
+        docker run -p 5000:5000 -p 8501:8501 <your_image_name> streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+        ```
+    *   In `docker-compose.yml`:
+        ```yaml
+        services:
+          bolt-app:
+            image: <your_image_name>
+            # command: ["bash", "examples/python/start-flask.sh"] # Example for Flask
+            command: ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"] # Example for Streamlit
+            ports:
+              - "5173:5173"
+              - "5000:5000" # If running Flask
+              - "8501:8501" # If running Streamlit
+            # ... other configurations
+        ```
+
+2.  **Use `docker exec`:** If the container is already running, you can execute the startup scripts (or any command) in it:
+    ```bash
+    docker exec -it <container_id_or_name> bash examples/python/start-flask.sh
+    # OR
+    docker exec -it <container_id_or_name> bash examples/python/start-streamlit.sh
+    ```
+
+#### Advanced Deployment Options
+
+For more robust or production-like deployments of your Python applications, consider the following:
+
+*   **Uvicorn for Flask/FastAPI:** As suggested by user feedback, for Flask applications, you can use an ASGI server like Uvicorn with an adapter (e.g., `a2wsgi`) for better performance. Create a `main.py` to adapt your Flask app:
+    ```python
+    # main.py
+    from a2wsgi import ASGIMiddleware
+    from app import app as flask_app # Assuming your Flask app instance is named 'app' in 'app.py'
+
+    app = ASGIMiddleware(flask_app)
+    ```
+    Then run with Uvicorn:
+    ```bash
+    uvicorn main:app --host 0.0.0.0 --port 5000
+    ```
+    Ensure `uvicorn` and `a2wsgi` are in your `requirements.txt`.
+
+*   **Procfile:** Some platforms (like Heroku or certain PaaS providers) use a `Procfile` to declare what commands should be run to start your application. Example `Procfile` entries:
+    ```
+    web: bash examples/python/start-flask.sh
+    # OR
+    web: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+    # OR for Uvicorn
+    web: uvicorn main:app --host 0.0.0.0 --port $PORT
+    ```
+    Note that `$PORT` is often an environment variable provided by the platform.
+
+This enhanced support aims to provide flexibility for developing and deploying a wide range of Python applications alongside bolt.diy.
 
 ## Setup
 
