@@ -106,6 +106,30 @@ project, please check the [project management guide](./PROJECT.md) to get starte
 - **Integration-ready Docker support** for a hassle-free setup.
 - **Deploy** directly to **Netlify**
 
+## Python Support
+
+The web container now includes Python, Flask, and Streamlit, allowing you to develop and run Python-based applications.
+
+### Flask
+
+To run a Flask application, use the following command in the terminal:
+
+```bash
+python3 -m flask run --host=0.0.0.0 --port=5000
+```
+
+Make sure your Flask application file (e.g., `app.py`) is in the root directory of your project.
+
+### Streamlit
+
+To run a Streamlit application, use the following command in the terminal:
+
+```bash
+streamlit run your_app.py --server.port 8501 --server.address 0.0.0.0
+```
+
+Replace `your_app.py` with the name of your Streamlit application file.
+
 ## Setup
 
 If you're new to installing software from GitHub, don't worry! If you encounter any issues, feel free to submit an "issue" using the provided links or improve this documentation by forking the repository, editing the instructions, and submitting a pull request. The following instruction will help you get the stable branch up and running on your local machine in no time.

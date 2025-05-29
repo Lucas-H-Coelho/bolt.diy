@@ -1,7 +1,9 @@
-ARG BASE=node:20.18.0
+ARG BASE=node:20.18.0-bullseye
 FROM ${BASE} AS base
 
 WORKDIR /app
+RUN apt-get update && apt-get install -y python3 python3-pip
+RUN pip3 install flask streamlit
 
 # Install dependencies (this step is cached as long as the dependencies don't change)
 COPY package.json pnpm-lock.yaml ./
@@ -16,6 +18,8 @@ COPY . .
 
 # Expose the port the app runs on
 EXPOSE 5173
+EXPOSE 5000
+EXPOSE 8501
 
 # Production image
 FROM base AS bolt-ai-production
