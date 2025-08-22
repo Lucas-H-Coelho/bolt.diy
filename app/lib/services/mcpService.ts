@@ -1,13 +1,15 @@
 import {
-  experimental_createMCPClient,
   type ToolSet,
   type Message,
   type DataStreamWriter,
   convertToCoreMessages,
   formatDataStreamPart,
-} from 'ai';
-import { Experimental_StdioMCPTransport } from 'ai/experimental';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+} from '@ai-sdk/core';
+import {
+  createMcpClient as experimental_createMCPClient,
+  StdioMcpTransport as Experimental_StdioMCPTransport,
+  StreamableHttpMcpTransport,
+} from '@ai-sdk/core/experimental';
 import { z } from 'zod';
 import type { ToolCallAnnotation } from '~/types/context';
 import {
@@ -175,7 +177,9 @@ export class MCPService {
     logger.debug(`Creating Streamable-HTTP client for ${serverName} with URL: ${config.url}`);
 
     const client = await experimental_createMCPClient({
-      transport: new StreamableHTTPClientTransport(new URL(config.url), {
+      transport: new StreamableHttpMcpTransport({
+        url: new URL(config.url),
+        fetch: fetch,
         requestInit: {
           headers: config.headers,
         },
