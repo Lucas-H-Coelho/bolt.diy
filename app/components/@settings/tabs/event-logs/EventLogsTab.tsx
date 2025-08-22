@@ -262,7 +262,7 @@ interface ExportFormat {
   handler: () => void;
 }
 
-export function EventLogsTab() {
+export default function EventLogsTab() {
   const logs = useStore(logStore.logs);
   const [selectedLevel, setSelectedLevel] = useState<'all' | string>('all');
   const [searchQuery, setSearchQuery] = useState('');

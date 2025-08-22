@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useStore } from '@nanostores/react';
 import * as RadixDialog from '@radix-ui/react-dialog';
 import { classNames } from '~/utils/classNames';
@@ -14,18 +14,18 @@ import { DialogTitle } from '~/components/ui/Dialog';
 import { AvatarDropdown } from './AvatarDropdown';
 import BackgroundRays from '~/components/ui/BackgroundRays';
 
-// Import all tab components
-import ProfileTab from '~/components/@settings/tabs/profile/ProfileTab';
-import SettingsTab from '~/components/@settings/tabs/settings/SettingsTab';
-import NotificationsTab from '~/components/@settings/tabs/notifications/NotificationsTab';
-import FeaturesTab from '~/components/@settings/tabs/features/FeaturesTab';
-import { DataTab } from '~/components/@settings/tabs/data/DataTab';
-import { EventLogsTab } from '~/components/@settings/tabs/event-logs/EventLogsTab';
-import ConnectionsTab from '~/components/@settings/tabs/connections/ConnectionsTab';
-import CloudProvidersTab from '~/components/@settings/tabs/providers/cloud/CloudProvidersTab';
-import ServiceStatusTab from '~/components/@settings/tabs/providers/status/ServiceStatusTab';
-import LocalProvidersTab from '~/components/@settings/tabs/providers/local/LocalProvidersTab';
-import McpTab from '~/components/@settings/tabs/mcp/McpTab';
+// Dynamically import all tab components
+const ProfileTab = lazy(() => import('~/components/@settings/tabs/profile/ProfileTab'));
+const SettingsTab = lazy(() => import('~/components/@settings/tabs/settings/SettingsTab'));
+const NotificationsTab = lazy(() => import('~/components/@settings/tabs/notifications/NotificationsTab'));
+const FeaturesTab = lazy(() => import('~/components/@settings/tabs/features/FeaturesTab'));
+const DataTab = lazy(() => import('~/components/@settings/tabs/data/DataTab'));
+const EventLogsTab = lazy(() => import('~/components/@settings/tabs/event-logs/EventLogsTab'));
+const ConnectionsTab = lazy(() => import('~/components/@settings/tabs/connections/ConnectionsTab'));
+const CloudProvidersTab = lazy(() => import('~/components/@settings/tabs/providers/cloud/CloudProvidersTab'));
+const ServiceStatusTab = lazy(() => import('~/components/@settings/tabs/providers/status/ServiceStatusTab'));
+const LocalProvidersTab = lazy(() => import('~/components/@settings/tabs/providers/local/LocalProvidersTab'));
+const McpTab = lazy(() => import('~/components/@settings/tabs/mcp/McpTab'));
 
 interface ControlPanelProps {
   open: boolean;
@@ -38,6 +38,12 @@ const BETA_TABS = new Set<TabType>(['service-status', 'local-providers', 'mcp'])
 const BetaLabel = () => (
   <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full bg-purple-500/10 dark:bg-purple-500/20">
     <span className="text-[10px] font-medium text-purple-600 dark:text-purple-400">BETA</span>
+  </div>
+);
+
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center h-full min-h-[300px]">
+    <div className="i-ph:spinner-gap w-8 h-8 animate-spin text-purple-500" />
   </div>
 );
 
@@ -280,7 +286,7 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
                     )}
                   >
                     {activeTab ? (
-                      getTabComponent(activeTab)
+                      <Suspense fallback={<LoadingSpinner />}>{getTabComponent(activeTab)}</Suspense>
                     ) : (
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
                         {visibleTabs.map((tab, index) => (
