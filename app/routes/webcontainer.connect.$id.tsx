@@ -27,6 +27,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   `;
 
   return new Response(htmlContent, {
-    headers: { 'Content-Type': 'text/html' },
+    headers: {
+      'Content-Type': 'text/html',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
   });
 };
