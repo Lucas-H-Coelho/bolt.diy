@@ -1,4 +1,4 @@
-import { createTwoFilesPatch } from 'diff';
+import { createTwoFilesPatch, diffLines, type Change } from 'diff';
 import type { FileMap } from '~/lib/stores/files';
 import { MODIFICATIONS_TAG_NAME, WORK_DIR } from './constants';
 
