@@ -5,9 +5,11 @@ import {
   convertToCoreMessages,
   formatDataStreamPart,
 } from '@ai-sdk/core';
-import { createMcpClient } from '@ai-sdk/mcp-client';
-import { StdioMcpTransport } from '@ai-sdk/mcp-stdio-transport';
-import { StreamableHttpMcpTransport } from '@ai-sdk/mcp-streamable-http-transport';
+import {
+  createMcpClient as experimental_createMCPClient,
+  StdioMcpTransport as Experimental_StdioMCPTransport,
+  StreamableHttpMcpTransport,
+} from '@ai-sdk/core/experimental';
 import { z } from 'zod';
 import type { ToolCallAnnotation } from '~/types/context';
 import {
@@ -174,8 +176,10 @@ export class MCPService {
   ): Promise<MCPClient> {
     logger.debug(`Creating Streamable-HTTP client for ${serverName} with URL: ${config.url}`);
 
-    const client = await createMcpClient({
-      transport: new StreamableHttpMcpTransport(new URL(config.url), {
+    const client = await experimental_createMCPClient({
+      transport: new StreamableHttpMcpTransport({
+        url: new URL(config.url),
+        fetch: fetch,
         requestInit: {
           headers: config.headers,
         },
@@ -188,7 +192,7 @@ export class MCPService {
   private async _createSSEClient(serverName: string, config: SSEServerConfig): Promise<MCPClient> {
     logger.debug(`Creating SSE client for ${serverName} with URL: ${config.url}`);
 
-    const client = await createMcpClient({
+    const client = await experimental_createMCPClient({
       transport: config,
     });
 
@@ -200,7 +204,7 @@ export class MCPService {
       `Creating STDIO client for '${serverName}' with command: '${config.command}' ${config.args?.join(' ') || ''}`,
     );
 
-    const client = await createMcpClient({ transport: new StdioMcpTransport(config) });
+    const client = await experimental_createMCPClient({ transport: new Experimental_StdioMCPTransport(config) });
 
     return Object.assign(client, { serverName });
   }
