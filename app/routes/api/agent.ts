@@ -2,7 +2,8 @@ import { type ActionFunctionArgs, json } from '@remix-run/cloudflare';
 import { AgentOrchestrator } from '../../lib/.server/agent/orchestrator';
 import type { Task } from '../../lib/.server/agent/types';
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action(args: ActionFunctionArgs) {
+  const { request } = args;
   if (request.method !== 'POST') {
     return json({ error: 'Method not allowed' }, { status: 405 });
   }
@@ -14,7 +15,7 @@ export async function action({ request }: ActionFunctionArgs) {
       return json({ error: 'Invalid task payload' }, { status: 400 });
     }
 
-    const orchestrator = new AgentOrchestrator();
+    const orchestrator = new AgentOrchestrator(args);
     const result = await orchestrator.execute(task);
 
     return json(result);
