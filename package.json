@@ -7,7 +7,19 @@
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "start": "remix-serve ./build/server/index.js",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "dev:backend": "nodemon --exec ts-node backend/src/server.ts",
+    "build:backend": "tsc -p backend/tsconfig.json",
+    "start:backend": "node backend/dist/server.js",
+    "test:backend": "jest --config backend/jest.config.js",
+    "migration:generate:backend": "typeorm migration:generate -d backend/src/config/database.config.ts",
+    "migration:run:backend": "typeorm migration:run -d backend/src/config/database.config.ts",
+    "migration:revert:backend": "typeorm migration:revert -d backend/src/config/database.config.ts",
+    "seed:run:backend": "ts-node backend/src/core/database/seeds/index.ts",
+    "docker:run:backend": "docker-compose -f docker-compose-backend.yml up -d",
+    "docker:stop:backend": "docker-compose -f docker-compose-backend.yml down",
+    "docker:logs:backend": "docker-compose -f docker-compose-backend.yml logs -f",
+    "setup:backend": "chmod +x backend/scripts/setup.sh && ./backend/scripts/setup.sh"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^0.0.28",
@@ -87,7 +99,23 @@
     "@ai-sdk/amazon-bedrock": "^0.0.12",
     "@ai-sdk/cohere": "^0.0.7",
     "@ai-sdk/deepseek": "^0.0.5",
-    "@webcontainer/api": "^1.1.10"
+    "@webcontainer/api": "^1.1.10",
+    "express": "^4.17.1",
+    "cors": "^2.8.5",
+    "helmet": "^4.6.0",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^5.5.1",
+    "socket.io": "^4.4.0",
+    "typeorm": "^0.3.0",
+    "pg": "^8.7.1",
+    "redis": "^4.0.0",
+    "ioredis": "^5.0.0",
+    "bullmq": "^1.0.0",
+    "dotenv": "^10.0.0",
+    "prom-client": "^14.0.0",
+    "reflect-metadata": "^0.1.13",
+    "ts-node": "^10.4.0",
+    "nodemon": "^2.0.15"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240529.0",
@@ -110,6 +138,15 @@
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-tsconfig-paths": "^4.3.2",
     "wrangler": "^3.67.1",
-    "@iconify/json": "^2.2.224"
+    "@iconify/json": "^2.2.224",
+    "@types/express": "^4.17.13",
+    "@types/cors": "^2.8.12",
+    "@types/compression": "^1.7.2",
+    "@types/node": "^16.11.12",
+    "jest": "^27.4.5",
+    "ts-jest": "^27.1.2",
+    "supertest": "^6.1.6",
+    "@types/jest": "^27.4.0",
+    "@types/supertest": "^2.0.11"
   }
 }
