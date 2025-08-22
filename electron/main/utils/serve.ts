@@ -56,6 +56,9 @@ export async function serveAsset(req: Request, assetsPath: string): Promise<Resp
   }
 
   const headers = new Headers();
+  headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+  headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
+  
   const mimeType = mime.getType(fullPath);
 
   if (mimeType) {

@@ -1,6 +1,14 @@
-#:schema node_modules/wrangler/config-schema.json
-name = "bolt"
-compatibility_flags = ["nodejs_compat"]
-compatibility_date = "2025-03-28"
+name = "bolt-ai"
 pages_build_output_dir = "./build/client"
-send_metrics = false
+
+[vars]
+NODE_VERSION = "20"
+
+[site]
+bucket = "./build/client"
+
+[[headers]]
+for = "/*"
+[headers.values]
+  Cross-Origin-Opener-Policy = "same-origin"
+  Cross-Origin-Embedder-Policy = "require-corp"

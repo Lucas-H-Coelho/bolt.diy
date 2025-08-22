@@ -8,6 +8,19 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+function crossOriginIsolation() {
+  return {
+    name: 'cross-origin-isolation',
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use((_req, res, next) => {
+        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+        res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+        next();
+      });
+    },
+  };
+}
+
 export default defineConfig((config) => {
   return {
     define: {
@@ -17,6 +30,7 @@ export default defineConfig((config) => {
       target: 'esnext',
     },
     plugins: [
+      crossOriginIsolation(),
       nodePolyfills({
         include: ['buffer', 'process', 'util', 'stream'],
         globals: {
