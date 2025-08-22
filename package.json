@@ -1,14 +1,4 @@
 {
-  "name": "bolt.diy",
-  "private": true,
-  "sideEffects": false,
-  "type": "module",
-  "scripts": {
-    "build": "remix vite:build",
-    "dev": "remix vite:dev",
-    "start": "remix-serve ./build/server/index.js",
-    "typecheck": "tsc"
-  },
   "dependencies": {
     "@ai-sdk/anthropic": "^0.0.28",
     "@ai-sdk/google": "^0.0.20",
@@ -63,7 +53,7 @@
     "mime": "^4.0.4",
     "nanostores": "^0.10.3",
     "octokit": "^4.0.2",
-    "ollama-ai-provider": "^0.1.10",
+    "ollama-ai-provider": "0.1.10",
     "path-browserify": "^1.0.1",
     "react": "^18.3.1",
     "react-dnd": "^16.0.1",
@@ -79,7 +69,15 @@
     "shiki": "^1.11.1",
     "tailwind-merge": "^2.4.0",
     "zod": "^3.23.8",
-    "zustand": "^4.5.4"
+    "zustand": "^4.5.4",
+    "@modelcontextprotocol/sdk": "^0.0.8",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.0",
+    "rehype-sanitize": "^7.0.0",
+    "@ai-sdk/amazon-bedrock": "^0.0.12",
+    "@ai-sdk/cohere": "^0.0.7",
+    "@ai-sdk/deepseek": "^0.0.5",
+    "@webcontainer/api": "^1.1.10"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240529.0",
@@ -101,9 +99,7 @@
     "vite": "^5.3.5",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-tsconfig-paths": "^4.3.2",
-    "wrangler": "^3.67.1"
-  },
-  "engines": {
-    "node": ">=20.0.0"
+    "wrangler": "^3.67.1",
+    "@iconify/json": "^2.2.224"
   }
 }

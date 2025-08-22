@@ -6,7 +6,7 @@ import {
   convertToCoreMessages,
   formatDataStreamPart,
 } from 'ai';
-import { Experimental_StdioMCPTransport } from 'ai/experimental';
+import { Experimental_StdioMCPTransport } from 'ai/mcp-stdio';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { z } from 'zod';
 import type { ToolCallAnnotation } from '~/types/context';

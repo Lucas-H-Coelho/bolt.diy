@@ -44,7 +44,7 @@ process.on('unhandledRejection', async (error) => {
 
   console.log(`APP_PATH_ROOT: ${root}`);
 
-  const subdirName = pkg.name;
+  const subdirName = (pkg as unknown as { name: string }).name;
 
   for (const [key, val] of [
     ['appData', ''],
