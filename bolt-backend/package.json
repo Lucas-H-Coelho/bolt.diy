@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/server.ts",
+    "build": "tsc && npm run copy-assets",
+    "start": "node dist/server.js",
+    "copy-assets": "cp -r src/templates dist/ && cp -r src/assets dist/",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch --detectOpenHandles",
+    "test:coverage": "jest --coverage --detectOpenHandles",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "typecheck": "tsc --noEmit",
+    "migration:generate": "typeorm migration:generate -d src/config/database.config.ts",
+    "migration:run": "typeorm migration:run -d src/config/database.config.ts",
+    "migration:revert": "typeorm migration:revert -d src/config/database.config.ts",
+    "seed:run": "ts-node src/core/database/seeds/index.ts",
+    "docker:build": "docker build -t bolt-backend .",
+    "docker:run": "docker-compose up -d",
+    "docker:stop": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "setup": "chmod +x scripts/setup.sh && ./scripts/setup.sh"
+  }
+}
